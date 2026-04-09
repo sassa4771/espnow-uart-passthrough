@@ -16,13 +16,10 @@
 #define UART_PORT Serial
 // #define UART_PORT Serial1
 
-#define UART_HAS_PINS 0
-// #define UART_HAS_PINS 1
-
-#define D7 20
-#define D6 21
-#define UART_RX_PIN D7
-#define UART_TX_PIN D6
+// #define D7 20
+// #define D6 21
+// #define UART_RX_PIN D7
+// #define UART_TX_PIN D6
 
 // Set the parent MAC address here.
 // To use broadcast, set peerMac to FF:FF:FF:FF:FF:FF.
@@ -34,11 +31,8 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-#if UART_HAS_PINS
-  UART_PORT.begin(UART_BAUD, SERIAL_8N1, UART_RX_PIN, UART_TX_PIN);
-#else
   UART_PORT.begin(UART_BAUD);
-#endif
+  // UART_PORT.begin(UART_BAUD, SERIAL_8N1, UART_RX_PIN, UART_TX_PIN);
   delay(200);
 
   espnow_uart_bridge::initializeEspNow();

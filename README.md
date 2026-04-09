@@ -32,6 +32,57 @@ UART から受け取った 1 行分の文字列を ESP-NOW フレームに詰め
 そのため、まずは USB シリアルの `Serial` を使う前提で試すのが簡単です。  
 外部 UART を使いたい場合は、`UART_PORT` や `UART_HAS_PINS`、`UART_RX_PIN`、`UART_TX_PIN` を環境に合わせて変更してください。
 
+### `Serial` から `Serial1` へ変更する方法
+
+USB シリアルではなく外部 UART を使いたい場合は、`uart_echo_demo.ino` の UART 設定を変更します。
+
+現在は以下のようになっています。
+
+```cpp
+#define UART_PORT Serial
+// #define UART_PORT Serial1
+
+#define UART_HAS_PINS 0
+// #define UART_HAS_PINS 1
+```
+
+`Serial1` を使う場合は、次のように切り替えます。
+
+```cpp
+// #define UART_PORT Serial
+#define UART_PORT Serial1
+
+// #define UART_HAS_PINS 0
+#define UART_HAS_PINS 1
+```
+
+このスケッチでは、`UART_HAS_PINS` が `1` のときに以下の初期化が使われます。
+
+```cpp
+UART_PORT.begin(UART_BAUD, SERIAL_8N1, UART_RX_PIN, UART_TX_PIN);
+```
+
+つまり、`Serial1` 利用時は RX/TX ピン定義も合わせて確認してください。
+
+```cpp
+#define D7 20
+#define D6 21
+#define UART_RX_PIN D7
+#define UART_TX_PIN D6
+```
+
+使い方のポイント:
+
+- `Serial` は主に USB シリアルモニタ用として使います
+- `Serial1` は外部機器との UART 通信用として使います
+- シリアルモニタでログを見ながら外部 UART も使いたい場合は、ログ用と通信相手用のポートの役割を整理して使う必要があります
+
+注意点:
+
+- 使用するボード定義によって `Serial1` が利用できるピンや挙動が異なることがあります
+- XIAO ESP32-C3 で実際に使うピンは、使用しているボードパッケージや配線に合わせて確認してください
+- 相手側機器とは GND を共通にしてください
+
 ## 3. コマンドの説明
 
 UART から 1 行入力して Enter を送ると、その行が処理されます。  
